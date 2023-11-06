@@ -1,0 +1,94 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--  <title>Socket.IO Chat</title>-->
+<!--  <style>-->
+<!--    #messages {-->
+<!--      list-style-type: none;-->
+<!--      margin: 0;-->
+<!--      padding: 0;-->
+<!--    }-->
+<!--    #messages li {-->
+<!--      margin: 5px 0;-->
+<!--    }-->
+<!--    #messages li:nth-child(odd) {-->
+<!--      background: #eee;-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--  <ul id="messages"></ul>-->
+<!--  <input id="username" autocomplete="off" placeholder="Your username" />-->
+<!--  <input id="recipient" autocomplete="off" placeholder="recipient name" />-->
+<!--  <input id="message" autocomplete="off" /><button onclick="sendMessage()">Send</button>-->
+
+
+<!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>-->
+<!--  <script>-->
+<!--    var socket = io();-->
+
+<!--    function sendMessage() {-->
+<!--  var username = document.getElementById('username').value;-->
+<!--  var recipient = document.getElementById('recipient').value;-->
+<!--  var message = document.getElementById('message').value;-->
+
+<!--  // Send the message along with the recipient's username-->
+<!--  socket.emit('chat message', { recipient, message });-->
+<!--  document.getElementById('message').value = '';-->
+<!--}-->
+
+
+<!--    socket.on('chat message', function(msg) {-->
+<!--      var li = document.createElement('li');-->
+<!--      li.textContent = msg;-->
+<!--      document.getElementById('messages').appendChild(li);-->
+<!--    });-->
+<!--  </script>-->
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.IO Chat</title>
+  <style>
+    #messages {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    #messages li {
+      margin: 5px 0;
+    }
+    #messages li:nth-child(odd) {
+      background: #eee;
+    }
+  </style>
+</head>
+<body>
+  <input id="username" autocomplete="off" placeholder="Your username" />
+  <input id="recipient" autocomplete="off" placeholder="Recipient's username" />
+  <input id="message" autocomplete="off" />
+  <button onclick="sendMessage()">Send</button>
+  <ul id="messages"></ul>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    var socket = io();
+
+    function sendMessage() {
+      var username = document.getElementById('username').value;
+      var recipient = document.getElementById('recipient').value;
+      var message = document.getElementById('message').value;
+
+      socket.emit('chat message', { recipient, message });
+      document.getElementById('message').value = '';
+    }
+
+    socket.on('chat message', function(msg) {
+      var li = document.createElement('li');
+      li.textContent = msg;
+      document.getElementById('messages').appendChild(li);
+    });
+  </script>
+</body>
+</html>
+

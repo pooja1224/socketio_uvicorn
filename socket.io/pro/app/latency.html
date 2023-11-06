@@ -1,0 +1,138 @@
+<!--<!doctype html>-->
+<!--<html>-->
+<!--  <head>-->
+<!--    <title>Socket.IO Latency</title>-->
+<!--  </head>-->
+<!--  <body>-->
+<!--    <h1>Socket.IO Latency <span id="latency"></span></h1>-->
+<!--    <h2 id="transport">(connecting)</h2>-->
+<!--      <input type="text" name="name" id="name_id">-->
+<!--      <button type="button" name="button" onclick="send()">Click here</button>-->
+<!--      <label id="printHello"></label>-->
+
+<!--    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>-->
+<!--    <script src="//cdnjs.cloudflare.com/ajax/libs/smoothie/1.27.0/smoothie.js"></script>-->
+<!--    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>-->
+<!--    <script>-->
+<!--      var socket = io.connect();-->
+<!--      function send() {-->
+<!--      var giveName = document.getElementById("name_id").value;-->
+<!--      socket.emit('send_name', giveName); // Send the name to the server-->
+<!--      }-->
+
+<!--    </script>-->
+<!--    <script>-->
+<!--    const socket = io({-->
+<!--    ackTimeout: 10000,-->
+<!--    retries: 3-->
+<!--  });-->
+<!--    </script>-->
+<!--&lt;!&ndash;    <script>&ndash;&gt;-->
+<!--&lt;!&ndash;      // socket&ndash;&gt;-->
+
+<!--&lt;!&ndash;      var socket = io.connect();&ndash;&gt;-->
+<!--&lt;!&ndash;      var char = $('chart').get(0);&ndash;&gt;-->
+<!--&lt;!&ndash;      socket.on('connect', function() {&ndash;&gt;-->
+<!--&lt;!&ndash;          if (chart.getContext) {x`&ndash;&gt;-->
+<!--&lt;!&ndash;              render();&ndash;&gt;-->
+<!--&lt;!&ndash;              window.onresize = render;&ndash;&gt;-->
+<!--&lt;!&ndash;          }&ndash;&gt;-->
+<!--&lt;!&ndash;          send();&ndash;&gt;-->
+<!--&lt;!&ndash;      });&ndash;&gt;-->
+<!--&lt;!&ndash;      &ndash;&gt;-->
+<!--&lt;!&ndash;      socket.on('pong_from_server', function() {&ndash;&gt;-->
+<!--&lt;!&ndash;          var latency = giveName;&ndash;&gt;-->
+<!--&lt;!&ndash;          $('#latency').text(latency);&ndash;&gt;-->
+<!--&lt;!&ndash;          if (time)&ndash;&gt;-->
+<!--&lt;!&ndash;              time.append(+new Date, latency);&ndash;&gt;-->
+<!--&lt;!&ndash;          setTimeout(send, 100);&ndash;&gt;-->
+<!--&lt;!&ndash;      });&ndash;&gt;-->
+
+<!--&lt;!&ndash;      socket.on('disconnect', function() {&ndash;&gt;-->
+<!--&lt;!&ndash;          if (smoothie)&ndash;&gt;-->
+<!--&lt;!&ndash;              smoothie.stop();&ndash;&gt;-->
+<!--&lt;!&ndash;          $('#transport').text('(disconnected)');&ndash;&gt;-->
+<!--&lt;!&ndash;      });&ndash;&gt;-->
+
+<!--&lt;!&ndash;      var last;&ndash;&gt;-->
+<!--&lt;!&ndash;      function send() {&ndash;&gt;-->
+<!--&lt;!&ndash;          last = giveName;&ndash;&gt;-->
+<!--&lt;!&ndash;          socket.emit('ping_from_client');&ndash;&gt;-->
+<!--&lt;!&ndash;          $('#transport').text(socket.io.engine.transport.name);&ndash;&gt;-->
+<!--&lt;!&ndash;      }&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;      // chart&ndash;&gt;-->
+<!--&lt;!&ndash;      var smoothie;&ndash;&gt;-->
+<!--&lt;!&ndash;      var time;&ndash;&gt;-->
+<!--&lt;!&ndash;      function render() {&ndash;&gt;-->
+<!--&lt;!&ndash;          if (smoothie)&ndash;&gt;-->
+<!--&lt;!&ndash;              smoothie.stop();&ndash;&gt;-->
+<!--&lt;!&ndash;          chart.width = document.body.clientWidth;&ndash;&gt;-->
+<!--&lt;!&ndash;          smoothie = new SmoothieChart();&ndash;&gt;-->
+<!--&lt;!&ndash;          smoothie.streamTo(chart, 1000);&ndash;&gt;-->
+<!--&lt;!&ndash;          time = new TimeSeries();&ndash;&gt;-->
+<!--&lt;!&ndash;          smoothie.addTimeSeries(time, {&ndash;&gt;-->
+<!--&lt;!&ndash;              strokeStyle: 'rgb(255, 0, 0)',&ndash;&gt;-->
+<!--&lt;!&ndash;              fillStyle: 'rgba(255, 0, 0, 0.4)',&ndash;&gt;-->
+<!--&lt;!&ndash;              lineWidth: 2&ndash;&gt;-->
+<!--&lt;!&ndash;          });&ndash;&gt;-->
+<!--&lt;!&ndash;      }&ndash;&gt;-->
+<!--&lt;!&ndash;    </script>&ndash;&gt;-->
+<!--  </body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.IO Chat</title>
+  <style>
+    #messages {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    #messages li {
+      margin: 5px 0;
+    }
+    #messages li:nth-child(odd) {
+      background: #eee;
+    }
+  </style>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <input id="from" autocomplete="off" placeholder="From" /><button onclick="join()">Join</button>
+  <input id="to" autocomplete="off" placeholder="To" />
+  <input id="message" autocomplete="off" /><button onclick="sendMessage()">Send</button>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    var socket = io();
+
+    function sendMessage() {
+      var message = document.getElementById('message').value;
+      var to = document.getElementById('to').value;
+      var from = document.getElementById('from').value;
+      socket.emit('chat message', from, to, message);
+      document.getElementById('message').value = '';
+    }
+
+    function join() {
+      var from = document.getElementById('from').value;
+      socket.emit('join', from);
+    }
+
+<!--    socket.on('join', function(frm) {-->
+<!--      var li = document.createElement('li');-->
+<!--      li.textContent = frm + ' has joined the chat.';-->
+<!--      document.getElementById('messages').appendChild(li);-->
+<!--    }-->
+
+    socket.on('chat message', function(msg) {
+      var li = document.createElement('li');
+      li.textContent =  msg;
+      document.getElementById('messages').appendChild(li);
+    });
+  </script>
+</body>
+</html>
